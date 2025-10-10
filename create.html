@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create - BUMS</title>
+  <meta name="viewport" content="width=340, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:linear-gradient(135deg,#0b1224,#0f1e3a 50%,#081224);color:#fff;font-family:'Inter',Arial,sans-serif;min-height:100vh;overflow-x:hidden;font-size:13px}
+    .wrap{width:340px;margin:0 auto;padding:14px 8px 110px 8px}
+
+    .tabs{display:flex;gap:10px;margin-bottom:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:6px}
+    .tab{flex:1;text-align:center;padding:10px;border-radius:12px;font-weight:800;letter-spacing:.4px;cursor:pointer}
+    .tab.active{background:linear-gradient(135deg,#8b5cf6,#6366f1);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+
+    .card{padding:14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 28px rgba(0,0,0,.35)}
+    .title{font-weight:800;margin:8px 0 6px 0}
+    .note{font-size:12px;color:#d7e1ff}
+    .row{margin:10px 0}
+    .inp{width:100%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);border-radius:12px;padding:12px;color:#fff}
+    .btn{width:100%;margin-top:10px;border:none;border-radius:12px;padding:12px 14px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:800;cursor:pointer}
+    .btn.alt{background:linear-gradient(135deg,#60a5fa,#3b82f6)}
+
+    .balance-outer{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px}
+    .balance-box{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.08));border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+    .bal-left{display:flex;flex-direction:column}
+    .bal-label{color:#34d399;font-weight:800;letter-spacing:.4px}
+    .bal-amt{font-weight:800;margin-top:4px}
+    .bal-dep{border:none;border-radius:12px;padding:10px 12px;font-weight:800;color:#fff;cursor:pointer;background:linear-gradient(135deg,#f59e0b,#ea580c);border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 16px rgba(234,88,12,.35);white-space:nowrap}
+
+    .hist-title{font-weight:800;margin:12px 4px 6px}
+    .gift-card{padding:12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);margin-bottom:10px}
+    .code-pill{display:inline-block;padding:10px 12px;border-radius:10px;border:2px solid #ef4444;color:#ef4444;font-weight:800;letter-spacing:.6px;background:rgba(239,68,68,.08)}
+    .code-pill.ok{border-color:#22c55e;color:#22c55e;background:rgba(34,197,94,.1)}
+    .gh-row{display:flex;gap:8px;margin-top:8px}
+    .tag{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px}
+    .k{font-size:11px;opacity:.8}
+    .v{font-weight:800;margin-top:4px}
+    .gh-actions{display:flex;gap:8px;margin-left:auto}
+    .gh-btn{border:none;border-radius:10px;padding:8px 10px;font-weight:800;cursor:pointer}
+    .copy{background:linear-gradient(135deg,#a78bfa,#6366f1);color:#fff}
+    .share{background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff}
+    .small{font-size:12px;opacity:.9}
+
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:340px;background:rgba(0,0,0,.9);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.1);border-radius:20px 20px 0 0;padding:16px 12px;display:flex;justify-content:space-around;align-items:center;z-index:100}
+    .nav-item{display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:8px 8px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);min-width:50px;flex:1;margin:0 2px;transition:transform .2s ease, background .2s ease}
+    .nav-item:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+    .nav-item.active{background:rgba(102,126,234,.2);border-color:rgba(102,126,234,.3)}
+    .nav-icon{width:22px;height:22px;margin-bottom:4px;background:#fff;mask-size:contain;mask-repeat:no-repeat;mask-position:center}
+    .nav-home .nav-icon{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'/%3E%3C/svg%3E")}
+    .nav-invite .nav-icon{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14' stroke='currentColor' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+    .nav-task .nav-icon{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E")}
+    .nav-ads .nav-icon{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'/%3E%3C/svg%3E")}
+    .nav-wallet .nav-icon{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'/%3E%3C/svg%3E")}
+    .nav-label{font-size:.7em;font-weight:500;color:#e0e0e0;text-transform:uppercase;letter-spacing:.3px}
+
+    @media(max-width:360px){
+      .container{width:100%;padding:7px 3px 90px 3px}
+      .bottom-nav{width:100%}
+    }
+
+    .toast{position:fixed;top:10px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(34,197,94,.95);color:#071b0f;border:1px solid rgba(34,197,94,.6);padding:10px 14px;border-radius:14px;font-weight:800;box-shadow:0 10px 28px rgba(0,0,0,.35);opacity:0;z-index:120;transition:all .25s ease}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* Title row with MY TASK button */
+    .title-row{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 6px 0
+    }
+    .title-row .title{margin:0}
+
+    .mytask-btn{
+      border:none;border-radius:10px;padding:8px 12px;font-weight:800;color:#fff;cursor:pointer;white-space:nowrap;
+      background:linear-gradient(135deg,#60a5fa,#3b82f6);border:1px solid rgba(255,255,255,.18);box-shadow:0 6px 16px rgba(59,130,246,.35)
+    }
+    .mytask-btn:active{transform:translateY(1px)}
+
+    /* BUMS Balance Display */
+    .bums-balance-box{
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px;margin:10px 0;
+    }
+    .bums-balance{
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .bums-bal-left{display:flex;flex-direction:column}
+    .bums-bal-label{color:#f59e0b;font-weight:800;letter-spacing:.4px;font-size:12px}
+    .bums-bal-amt{font-weight:800;margin-top:4px;color:#fff}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="tabs">
+      <div class="tab active" data-tab="task">CREATE TASK</div>
+      <div class="tab" data-tab="gift">CREATE GIFT</div>
+    </div>
+
+    <!-- Create Task -->
+    <div id="task" class="card">
+      <div class="title-row">
+        <div class="title">ENTER TASK LINK</div>
+        <button class="mytask-btn" id="myTaskBtn">MY TASK</button>
+      </div>
+
+      <input id="taskLink" class="inp" placeholder="@channelusername or https://t.me/channelusername" />
+
+      <div class="title" style="margin-top:10px">CURRENCY: TON</div>
+      <div class="balance-outer row">
+        <div class="balance-box">
+          <div class="bal-left">
+            <div class="bal-label">TON BALANCE</div>
+            <div class="bal-amt" id="tonBalance">0.0000 TON</div>
+          </div>
+          <button id="depositBtn" class="bal-dep">DEPOSIT +200%</button>
+        </div>
+      </div>
+
+      <div class="title">ENTER AMOUNT (TON)</div>
+      <input id="taskAmount" class="inp" placeholder="0.55" inputmode="decimal" />
+
+      <button id="createTaskBtn" class="btn">CREATE TASK</button>
+
+      <div class="row" style="margin-top:12px;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px;background:rgba(255,255,255,.04)">
+        <div class="note">Note: If you don't assign admin status to the bot on your channel, you may have trouble gaining members. Click "ADD ADMIN" to allow direct admission.</div>
+        <button id="addAdminBtn" class="btn alt" style="margin-top:10px">ADD ADMIN</button>
+      </div>
+    </div>
+
+    <!-- Create Gift -->
+    <div id="gift" class="card" style="display:none">
+      <div class="title">CURRENCY</div>
+      <select id="giftCurrency" class="inp">
+        <option value="BUMS" selected>BUMS</option>
+        <option value="TON">TON</option>
+      </select>
+
+      <!-- BUMS Balance Display -->
+      <div id="bumsBalanceBox" class="bums-balance-box">
+        <div class="bums-balance">
+          <div class="bums-bal-left">
+            <div class="bums-bal-label">BUMS BALANCE</div>
+            <div class="bums-bal-amt" id="bumsBalance">0 BUMS</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TON Balance Display -->
+      <div id="tonBalanceBox" class="balance-outer" style="display:none;margin:10px 0">
+        <div class="balance-box">
+          <div class="bal-left">
+            <div class="bal-label">TON BALANCE</div>
+            <div class="bal-amt" id="giftTonBalance">0.0000 TON</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="title">TOTAL BUDGET (<span data-gift-unit>BUMS</span>)</div>
+      <input id="giftBudget" class="inp" placeholder="100" inputmode="numeric" />
+
+      <div class="title">PER USER REWARD (<span data-gift-unit>BUMS</span>)</div>
+      <input id="giftPerUser" class="inp" placeholder="10" inputmode="numeric" />
+
+      <button id="createGiftBtn" class="btn">CREATE GIFT</button>
+      <div class="small" style="margin-top:6px">
+        Min budget <span data-gift-min-budget>100</span> <span data-gift-unit>BUMS</span>, min per user <span data-gift-min-reward>10</span> <span data-gift-unit>BUMS</span>; winners = floor(budget/reward).
+      </div>
+
+      <div class="hist-title">GIFT CODE HISTORY</div>
+      <div id="giftHistory"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <div class="bottom-nav">
+    <div class="nav-item nav-home" onclick="window.location.href='index.html'">
+      <div class="nav-icon"></div><span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item nav-invite active" onclick="window.location.href='invite.html'">
+      <div class="nav-icon"></div><span class="nav-label">Invite</span>
+    </div>
+    <div class="nav-item nav-task" onclick="window.location.href='tasks.html'">
+      <div class="nav-icon"></div><span class="nav-label">Tasks</span>
+    </div>
+    <div class="nav-item nav-ads" onclick="window.location.href='ads.html'">
+      <div class="nav-icon"></div><span class="nav-label">Ads</span>
+    </div>
+    <div class="nav-item nav-wallet" onclick="window.location.href='wallet.html'">
+      <div class="nav-icon"></div><span class="nav-label">Wallet</span>
+    </div>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getDatabase, ref, push, set, onValue, runTransaction, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALUr9fR5GE5CxPwY2xdYcIEvy33nu4vbs",
+  authDomain: "money-bums-c9eba.firebaseapp.com",
+  databaseURL: "https://money-bums-c9eba-default-rtdb.firebaseio.com",
+  projectId: "money-bums-c9eba",
+  storageBucket: "money-bums-c9eba.firebasestorage.app",
+  messagingSenderId: "759031341495",
+  appId: "1:759031341495:web:e9d2f9a7ec124e0a524832",
+  measurementId: "G-XWHHSQHPP9"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// Tabs
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const k = t.dataset.tab;
+    document.getElementById('task').style.display = k==='task' ? '' : 'none';
+    document.getElementById('gift').style.display = k==='gift' ? '' : 'none';
+  });
+});
+
+// Telegram user
+function getTelegramUser() {
+  try { const tg = window.Telegram?.WebApp; tg?.ready?.(); const u = tg?.initDataUnsafe?.user; if (u?.id) return u; } catch {}
+  try {
+    const parse = (src)=>{ const sp=new URLSearchParams(src); const raw=sp.get('tgWebAppData')||sp.get('tgwebappdata'); if(!raw) return null; const inner=new URLSearchParams(raw); const s=inner.get('user'); return s?JSON.parse(s):null; };
+    const h = location.hash? parse(location.hash.slice(1)) : null; if (h?.id) return h;
+    const q = parse(location.search.slice(1)); if (q?.id) return q;
+  } catch {}
+  return { id:"NOT_APP" };
+}
+const UID = String(getTelegramUser()?.id || "NOT_APP");
+
+// Toast
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=> el.classList.remove('show'),1600);
+  try{window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success');}catch{}
+}
+
+// Initialize user data if not exists
+async function initializeUserIfNeeded(){
+  try{
+    const userRef = ref(db, `users/${UID}`);
+    const snap = await get(userRef);
+    if (!snap.exists()) {
+      await set(userRef, {
+        balance: 0,
+        ton_balance: 0,
+        createdAt: Date.now()
+      });
+    } else {
+      const userData = snap.val();
+      // Ensure balance fields exist
+      if (userData.balance === undefined || userData.balance === null) {
+        await set(ref(db, `users/${UID}/balance`), 0);
+      }
+      if (userData.ton_balance === undefined || userData.ton_balance === null) {
+        await set(ref(db, `users/${UID}/ton_balance`), 0);
+      }
+    }
+  }catch(e){
+    console.error('Error initializing user:', e);
+  }
+}
+
+// Initialize user on load
+initializeUserIfNeeded();
+
+// Balance display functions
+const tonBalEl = document.getElementById('tonBalance');
+const giftTonBalEl = document.getElementById('giftTonBalance');
+const bumsBalEl = document.getElementById('bumsBalance');
+
+// TON balance display
+onValue(ref(db, `users/${UID}/ton_balance`), s=>{
+  const v = Number(s.val() || 0);
+  const formatted = v.toFixed(4) + " TON";
+  tonBalEl.textContent = formatted;
+  giftTonBalEl.textContent = formatted;
+});
+
+// BUMS balance display
+onValue(ref(db, `users/${UID}/balance`), s=>{
+  const v = Number(s.val() || 0);
+  bumsBalEl.textContent = v + " BUMS";
+});
+
+// Deposit / Admin
+document.getElementById('depositBtn').addEventListener('click', ()=>{ window.location.href = "wallet.html?tab=deposit"; });
+document.getElementById('addAdminBtn').addEventListener('click', ()=>{ window.location.href = "https://t.me/moneybums_bot"; });
+
+// MY TASK navigation
+document.getElementById('myTaskBtn')?.addEventListener('click', ()=>{
+  location.href = 'mytask.html';
+});
+
+// Parse task name from link
+function parseTaskName(link){
+  try{
+    if (link.startsWith('@')) return link.slice(1).replace(/[^A-Za-z0-9_]/g,'').toUpperCase();
+    const u = new URL(link);
+    if (u.hostname.endsWith('t.me')){
+      const seg = u.pathname.split('/').filter(Boolean)[0] || '';
+      return seg.replace(/[^A-Za-z0-9_]/g,'').toUpperCase();
+    }
+  }catch{}
+  return 'UNKNOWN';
+}
+
+// Enhanced balance deduction with debugging
+async function deductFromUserBalance(uid, currency, amount){
+  const path = currency === 'TON' ? 'ton_balance' : 'balance';
+  const balRef = ref(db, `users/${uid}/${path}`);
+  
+  try {
+    const res = await runTransaction(balRef, (currentValue)=>{
+      const currentBalance = Number(currentValue || 0);
+      const deductAmount = Number(amount || 0);
+      
+      // Debug logging
+      console.log(`Deducting ${currency}:`, {
+        currentBalance,
+        deductAmount,
+        sufficient: currentBalance >= deductAmount
+      });
+      
+      if (!Number.isFinite(deductAmount) || deductAmount <= 0) {
+        console.log('Invalid deduct amount');
+        return; // abort transaction
+      }
+      
+      if (currentBalance < deductAmount) {
+        console.log('Insufficient balance');
+        return; // abort transaction
+      }
+      
+      const newBalance = currentBalance - deductAmount;
+      console.log('New balance will be:', newBalance);
+      return newBalance;
+    });
+    
+    console.log('Transaction result:', res);
+    return res.committed;
+  } catch (error) {
+    console.error('Transaction error:', error);
+    return false;
+  }
+}
+
+// Create Task (TON) with sufficient balance check
+document.getElementById('createTaskBtn').addEventListener('click', async ()=>{
+  const link = document.getElementById('taskLink').value.trim();
+  const amt  = parseFloat((document.getElementById('taskAmount').value||'').trim());
+
+  if (!link || !/^(@|https:\/\/t\.me\/)/.test(link)){ toast("Valid task link required"); return; }
+  if (!Number.isFinite(amt) || amt < 0.55){ toast("Minimum 0.55 TON"); return; }
+
+  // 1) Deduct TON first atomically
+  const ok = await deductFromUserBalance(UID, 'TON', amt);
+  if (!ok){ toast("Insufficient TON balance"); return; }
+
+  // 2) Dynamic maxCompletions logic
+  let maxUsers;
+  if (amt <= 0.55) maxUsers = 500;
+  else if (amt >= 1.1) maxUsers = Math.round(1000 * (amt / 1.1));
+  else maxUsers = Math.round(500 + ((amt - 0.55) / (1.1 - 0.55)) * (1000 - 500));
+
+  // 3) Create task
+  const taskName = parseTaskName(link);
+  const ts = Date.now();
+  const idRef = push(ref(db, 'tasks'));
+  await set(idRef, {
+    id:idRef.key,
+    userid:UID,
+    link,
+    taskName,
+    amountTON:amt,
+    maxUsers:maxUsers,
+    currentCompletions: 0,
+    maxCompletions: maxUsers,
+    status:'active',
+    createdAt:ts
+  });
+
+  toast("Task created successfully");
+  document.getElementById('taskLink').value = '';
+  document.getElementById('taskAmount').value = '';
+});
+
+// Gift helpers and history
+function makeCode(n=10){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s=''; for(let i=0;i<n;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s;
+}
+
+// Format gift item with unit
+function giftItem(g){
+  const avail = Math.max(Number(g.availableClaims || 0), 0);
+  const cls = avail>0 ? 'ok' : '';
+  const unit = g.currency || 'BUMS';
+  const valueFmt = (n)=> unit==='TON' ? Number(n||0).toFixed(4) : String(Number(n||0));
+  const rew = `${valueFmt(g.perUser)} ${unit}`;
+  return `
+    <div class="gift-card">
+      <div style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+        <div class="code-pill ${cls}">${g.code}</div>
+        <div class="gh-actions">
+          <button class="gh-btn copy" data-code="${g.code}">COPY</button>
+          <button class="gh-btn share" data-share="${g.code}">SHARE</button>
+        </div>
+      </div>
+      <div class="gh-row">
+        <div class="tag"><div class="k">MAXIMUM ACTIVE</div><div class="v">${Number(g.maxActive || 0)}</div></div>
+        <div class="tag"><div class="k">AVAILABLE CLAIMS</div><div class="v">${avail}</div></div>
+        <div class="tag"><div class="k">REWARD</div><div class="v">${rew}</div></div>
+      </div>
+    </div>
+  `;
+}
+
+// Currency UI bindings
+const giftCurrencyEl = document.getElementById('giftCurrency');
+const unitSpans = ()=> document.querySelectorAll('[data-gift-unit]');
+const minBudgetSpan = document.querySelector('[data-gift-min-budget]');
+const minRewardSpan = document.querySelector('[data-gift-min-reward]');
+const giftBudgetEl = document.getElementById('giftBudget');
+const giftPerUserEl = document.getElementById('giftPerUser');
+const bumsBalanceBox = document.getElementById('bumsBalanceBox');
+const tonBalanceBox = document.getElementById('tonBalanceBox');
+
+function updateGiftCurrencyUnits(){
+  const cur = giftCurrencyEl?.value || 'BUMS';
+  unitSpans().forEach(el => { el.textContent = cur; });
+  
+  if (cur === 'TON'){
+    minBudgetSpan.textContent = '0.1';
+    minRewardSpan.textContent = '0.01';
+    giftBudgetEl.placeholder = '0.1';
+    giftPerUserEl.placeholder = '0.01';
+    giftBudgetEl.setAttribute('inputmode','decimal');
+    giftPerUserEl.setAttribute('inputmode','decimal');
+    // Show TON balance, hide BUMS balance
+    bumsBalanceBox.style.display = 'none';
+    tonBalanceBox.style.display = '';
+  } else {
+    minBudgetSpan.textContent = '100';
+    minRewardSpan.textContent = '10';
+    giftBudgetEl.placeholder = '100';
+    giftPerUserEl.placeholder = '10';
+    giftBudgetEl.setAttribute('inputmode','numeric');
+    giftPerUserEl.setAttribute('inputmode','numeric');
+    // Show BUMS balance, hide TON balance
+    bumsBalanceBox.style.display = '';
+    tonBalanceBox.style.display = 'none';
+  }
+}
+giftCurrencyEl?.addEventListener('change', updateGiftCurrencyUnits);
+updateGiftCurrencyUnits();
+
+// Create gift with currency-specific minimums and atomic deduction
+document.getElementById('createGiftBtn').addEventListener('click', async ()=>{
+  const currency = giftCurrencyEl?.value || 'BUMS';
+  const minBudget = currency === 'TON' ? 0.1 : 100;
+  const minPer    = currency === 'TON' ? 0.01 : 10;
+
+  const budget  = parseFloat((giftBudgetEl.value||'').trim());
+  const perUser = parseFloat((giftPerUserEl.value||'').trim());
+
+  if (!Number.isFinite(budget) || budget < minBudget){ toast(`Minimum budget ${minBudget} ${currency}`); return; }
+  if (!Number.isFinite(perUser) || perUser < minPer){ toast(`Per user minimum ${minPer} ${currency}`); return; }
+
+  const winners = Math.floor(budget / perUser);
+  if (winners <= 0){ toast("Increase budget or decrease per user"); return; }
+
+  // 1) Deduct from correct balance atomically
+  const ok = await deductFromUserBalance(UID, currency, budget);
+  if (!ok){ toast(`Insufficient ${currency} balance`); return; }
+
+  // 2) Create gift record
+  const ts = Date.now();
+  const code = makeCode(10);
+  const idRef = push(ref(db, 'gifts'));
+  await set(idRef, {
+    id:idRef.key,
+    userid:UID,
+    currency: currency,      // 'TON' or 'BUMS'
+    budget: budget,          // deducted amount
+    perUser: perUser,        // reward per claim
+    maxActive: winners,
+    availableClaims: winners,
+    code,
+    status:'open',
+    createdAt: ts
+  });
+
+  toast(`${currency} gift created successfully`);
+  giftBudgetEl.value='';
+  giftPerUserEl.value='';
+});
+
+// Load gift history
+function loadGiftHistory(){
+  onValue(ref(db, 'gifts'), snap=>{
+    const list = [];
+    const all = snap.val() || {};
+    Object.values(all).forEach(g=>{ if (g.userid === UID) list.push(g); });
+    list.sort((a,b)=> Number(b.createdAt||0)-Number(a.createdAt||0));
+    const box = document.getElementById('giftHistory');
+    box.innerHTML = list.map(giftItem).join('') || '<div class="small">No gifts yet.</div>';
+
+    // Copy/share buttons
+    box.querySelectorAll('.gh-btn.copy').forEach(b=>{
+      b.onclick = async ()=>{ 
+        try{ 
+          await navigator.clipboard.writeText(b.dataset.code); 
+          toast("Code copied"); 
+        }catch{
+          // Fallback for older browsers
+          const textArea = document.createElement('textarea');
+          textArea.value = b.dataset.code;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          toast("Code copied");
+        } 
+      };
+    });
+    box.querySelectorAll('.gh-btn.share').forEach(b=>{
+      b.onclick = ()=>{
+        const code = b.dataset.share;
+        const txt = encodeURIComponent(`Use this gift code: ${code}`);
+        window.location.href = `https://t.me/share/url?url=${encodeURIComponent('https://t.me/moneybums_bot')}&text=${txt}`;
+      };
+    });
+  });
+}
+loadGiftHistory();
+</script>
+</body>
+</html>

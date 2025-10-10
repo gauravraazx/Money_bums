@@ -74,7 +74,7 @@
       <!-- Premium -->
       <div class="ad-item">
         <div class="ad-title">💎 Premium Video Ad</div>
-        <div class="ad-reward">+ 10 BUMS per ad</div>
+        <div class="ad-reward">+ 4 BUMS per ad</div>
         <div class="progress-row">
           <div class="progress-label"><span>View progress</span><span id="premium-view-text">0/25</span></div>
           <div class="progress-track"><div class="progress-fill" id="premium-view-bar"></div></div>
@@ -85,7 +85,7 @@
       <!-- Sponsored -->
       <div class="ad-item">
         <div class="ad-title">🚀 Sponsored Content</div>
-        <div class="ad-reward">+ 10 BUMS per view</div>
+        <div class="ad-reward">+ 4 BUMS per view</div>
         <div class="progress-row">
           <div class="progress-label"><span>View progress</span><span id="sponsored-view-text">0/25</span></div>
           <div class="progress-track"><div class="progress-fill" id="sponsored-view-bar"></div></div>
@@ -151,7 +151,7 @@
     onValue(ref(db,`users/${UID}/earnings_total`), s=> totEl.textContent=`${Number(s.val()||0)} BUMS`);      /* [web:73] */
     onValue(ref(db,`users/${UID}/earnings_daily/${TKEY}/amount`), s=> todayEl.textContent=`${Number(s.val()||0)} BUMS`); /* [web:73] */
 
-    const CAP=25, REWARD=10;
+    const CAP=25, REWARD=4;
     const pvText=document.getElementById('premium-view-text'),   pvBar=document.getElementById('premium-view-bar');
     const spText=document.getElementById('sponsored-view-text'), spBar=document.getElementById('sponsored-view-bar');
     const paint=(c,txt,bar)=>{ const v=Number(c||0); txt.textContent=`${v}/${CAP}`; bar.style.width=`${Math.min(100,Math.round((v/CAP)*100))}%`; };

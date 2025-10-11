@@ -247,7 +247,7 @@ async function claim(task) {
   }
 
   // 🎁 User reward: 2 BUMS
-  const reward = 2;
+  const reward = 15;
   await runTransaction(ref(db, `users/${UID}/balance`), (cur) => Number(cur || 0) + reward);
 
   // 🧩 Referral reward (50%)
@@ -261,7 +261,7 @@ async function claim(task) {
     await runTransaction(refEarnRef, (cur) => Number(cur || 0) + refBonus);
   }
 
-  toast("Claimed +2 BUMS");
+  toast("Claimed +15 BUMS");
   const b = document.getElementById(`btn_${task.id}`);
   if (b) {
     b.textContent = "CLAIMED";

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tasks - Earn BUMS</title>
+  <meta name="viewport" content="width=340, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #ffffff;
+      font-family: 'Inter', Arial, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-size: 13px;
+    }
+    .container { width: 340px; margin: 0 auto; padding: 12px 8px 90px 8px; }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 14px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3); border: 1px solid rgba(255,255,255,0.1);
+    }
+    .header-title { font-size: 1em; font-weight: 700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+    .balance-display {
+      background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 14px;
+      padding: 12px 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center;
+    }
+    .balance-label { font-size: 0.95em; font-weight: 600; color: #f0f0f0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .balance-value { font-size: 1.1em; font-weight: 700; color: #4ade80; }
+
+    .tasks-section {
+      background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 14px;
+      padding: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.3); margin-bottom: 16px;
+    }
+    .section-title { font-size: 0.95em; font-weight: 600; margin-bottom: 12px; color: #f0f0f0; text-transform: uppercase; letter-spacing: 1px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .create-btn {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 6px 12px; border-radius: 6px;
+      font-size: 0.8em; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(239,68,68,0.3);
+    }
+    .create-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+
+    .task-item {
+      background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px; margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;
+    }
+    .task-info { flex: 1; }
+    .task-title { font-size: 0.95em; font-weight: 600; color: #f0f0f0; margin-bottom: 4px; }
+    .task-reward { font-size: 0.85em; color: #4ade80; font-weight: 500; }
+    .task-btn { padding: 8px 16px; border: none; border-radius: 8px; font-size: 0.9em; font-weight: 600; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; min-width: 80px; }
+    .join-btn { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; box-shadow: 0 2px 8px rgba(139,92,246,0.3); }
+    .join-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+    .countdown-btn { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; cursor: not-allowed; box-shadow: 0 2px 8px rgba(245,158,11,0.3); }
+    .claim-btn { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; box-shadow: 0 2px 8px rgba(16,185,129,0.3); animation: pulse 2s infinite; }
+    .claim-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+    .claimed-btn { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: #d1d5db; cursor: not-allowed; box-shadow: none; }
+    .no-tasks { text-align: center; color: #9ca3af; font-weight: 500; padding: 20px; font-size: 0.95em; letter-spacing: 0.5px; }
+
+    /* Promo Code Section */
+    .promo-input-container { display: flex; gap: 8px; align-items: center; }
+    .promo-input {
+      flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05); color: #fff; font-size: 0.9em; outline: none; transition: all 0.3s; text-transform: uppercase;
+    }
+    .promo-input:focus { border-color: #8b5cf6; background: rgba(255,255,255,0.1); box-shadow: 0 0 0 2px rgba(139,92,246,0.2); }
+    .promo-input::placeholder { color: #9ca3af; text-transform: none; }
+    .promo-btn {
+      padding: 10px 20px; border-radius: 12px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      border: none; color: white; font-weight: 600; cursor: pointer; text-transform: uppercase; box-shadow: 0 2px 8px rgba(139,92,246,0.3);
+      transition: all 0.3s; font-size: 0.9em; letter-spacing: 0.5px;
+    }
+    .promo-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+    .promo-btn:disabled { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); cursor: not-allowed; transform: none; box-shadow: none; }
+
+    @keyframes pulse { 0% { transform: scale(1);} 50% { transform: scale(1.05);} 100% { transform: scale(1);} }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 340px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 20px 20px 0 0; padding: 16px 8px; display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 6px 4px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); min-width: 45px; flex: 1; margin: 0 2px; transition: all 0.2s; }
+    .nav-item:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .nav-icon { width: 20px; height: 20px; margin-bottom: 3px; background: #fff; mask-size: contain; mask-repeat: no-repeat; mask-position: center; }
+    .nav-home .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'/%3E%3C/svg%3E"); }
+    .nav-ads .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'/%3E%3C/svg%3E"); }
+    .nav-refer .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'/%3E%3C/svg%3E"); }
+    .nav-task .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E"); }
+    .nav-wallet .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'/%3E%3C/svg%3E"); }
+    .nav-label { font-size: 0.65em; font-weight: 500; color: #e0e0e0; text-transform: uppercase; letter-spacing: 0.3px; }
+
+    #snackbar { display: none; position: fixed; top: 18px; left: 50%; transform: translateX(-50%); background: #059669; color: white; padding: 12px 24px; border-radius: 24px; z-index: 2001; font-weight: 600; font-size: 1em; box-shadow: 0 4px 16px rgba(5,150,105,0.4); transition: opacity 0.4s; opacity: 1; letter-spacing: 0.5px; }
+    #snackbar.error { background: #ef4444; box-shadow: 0 4px 16px rgba(239,68,68,0.4); }
+
+    @media (max-width: 360px) { .container { width: 100%; padding: 10px 5px 90px 5px; } .bottom-nav { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><div class="header-title" id="telegram-id">Loading User...</div></div>
+
+    <div class="balance-display">
+      <div class="balance-label">Current BUMS Balance:</div>
+      <div class="balance-value" id="dogs-balance">...</div>
+    </div>
+
+    <div class="tasks-section">
+      <div class="section-title">PROMO CODE</div>
+      <div class="promo-input-container">
+        <input type="text" id="promo-code-input" class="promo-input" placeholder="Enter promo code" maxlength="20"/>
+        <button id="promo-code-btn" class="promo-btn" onclick="redeemPromoCode()">REDEEM</button>
+      </div>
+    </div>
+
+    <div class="tasks-section">
+      <div class="section-header">
+        <div class="section-title">Tasks</div>
+        <button class="create-btn" onclick="window.location.href='create.html'">CREATE</button>
+      </div>
+      <div id="firebase-tasks-container"></div>
+    </div>
+  </div>
+
+  <div id="snackbar"></div>
+
+  <div class="bottom-nav">
+    <div class="nav-item nav-home" onclick="window.location.href='index.html'">
+      <div class="nav-icon"></div><span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item nav-ads" onclick="window.location.href='ads.html'">
+      <div class="nav-icon"></div><span class="nav-label">Ads</span>
+    </div>
+    <div class="nav-item nav-refer" onclick="window.location.href='refer.html'">
+      <div class="nav-icon"></div><span class="nav-label">Refer</span>
+    </div>
+    <div class="nav-item nav-task" onclick="window.location.href='tasks.html'">
+      <div class="nav-icon"></div><span class="nav-label">Tasks</span>
+    </div>
+    <div class="nav-item nav-wallet" onclick="window.location.href='wallet.html'">
+      <div class="nav-icon"></div><span class="nav-label">Wallet</span>
+    </div>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, get, set, update, remove, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    // Snackbar
+    function showSnackbar(msg, isError = false) {
+      const bar = document.getElementById('snackbar');
+      if (!bar) return;
+      bar.textContent = msg;
+      bar.className = isError ? 'error' : '';
+      bar.style.display = 'block';
+      bar.style.opacity = 1;
+      setTimeout(() => {
+        bar.style.opacity = 0;
+        setTimeout(() => { bar.style.display = 'none'; }, 400);
+      }, isError ? 4000 : 3000);
+    }
+
+    // Firebase init
+    const firebaseConfig = {
+      apiKey: "AIzaSyBv4V4zPlUlbotICs5JVVJVfeZ_wesBCQI",
+      authDomain: "momey-bims.firebaseapp.com",
+      databaseURL: "https://momey-bims-default-rtdb.firebaseio.com",
+      projectId: "momey-bims",
+      storageBucket: "momey-bims.firebasestorage.app",
+      messagingSenderId: "21496105095",
+      appId: "1:21496105095:web:cbd7b39dada8f0b671d022",
+      measurementId: "G-ECE8ZBS23B"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    // Telegram WebApp
+    window.Telegram?.WebApp?.ready?.();
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const userKey = tgUser ? String(tgUser.id) : "7206619137";
+    const userDisplayName = tgUser ? (tgUser.username ? "@"+tgUser.username : "ID: "+tgUser.id) : "7206619137";
+    document.getElementById("telegram-id").textContent = userDisplayName;
+
+    // Utils
+    const todayStr = () => new Date().toISOString().split('T')[0];
+    let currentBumsBalance = 0;
+
+    // Atomic totals increment
+    async function incrementTotals(amount, currency = 'BUMS', doneInc = 1) {
+      const totalEarnRef   = ref(db, `users/${userKey}/totalEarn`);
+      const byCurrencyRef  = ref(db, `users/${userKey}/totalEarnBy/${currency}`);
+      const taskDoneRef    = ref(db, `users/${userKey}/taskDone`);
+      await Promise.all([
+        runTransaction(totalEarnRef,  cur => (cur ?? 0) + Number(amount)),
+        runTransaction(byCurrencyRef, cur => (cur ?? 0) + Number(amount)),
+        runTransaction(taskDoneRef,   cur => (cur ?? 0) + Number(doneInc)),
+      ]);
+    }
+
+    // Load user data
+    async function loadUserData() {
+      const userRef = ref(db, 'users/' + userKey);
+      try {
+        const snap = await get(userRef);
+        let data;
+        if (snap.exists()) {
+          data = snap.val() || {};
+        } else {
+          await set(userRef, { dogs: 10 });
+          data = { dogs: 10 };
+        }
+        currentBumsBalance = data.dogs ?? 0;
+        document.getElementById('dogs-balance').textContent = String(currentBumsBalance);
+      } catch (e) {
+        document.getElementById('dogs-balance').textContent = 'ERR';
+        console.error('loadUserData error:', e);
+      }
+    }
+
+    // Load Firebase dynamic tasks
+    async function loadFirebaseTasks() {
+      try {
+        const tasksRef = ref(db, 'tasks');
+        const snap = await get(tasksRef);
+        const container = document.getElementById('firebase-tasks-container');
+        if (!container) return;
+
+        if (!snap.exists() || !snap.val()) {
+          container.innerHTML = '<div class="no-tasks">NOT CREATED TASKS</div>';
+          return;
+        }
+
+        const tasks = snap.val();
+        const userSnap = await get(ref(db, 'users/' + userKey));
+        const userData = userSnap.val() || {};
+        container.innerHTML = '';
+
+        const active = Object.entries(tasks).filter(([taskId, task]) => {
+          const currentCompletions = task.currentCompletions || 0;
+          const maxCompletions     = task.maxCompletions || 0;
+          const status             = task.status;
+          const doneToday          = userData[`completedTask_${taskId}`] === todayStr();
+          return status === 'active' && currentCompletions < maxCompletions && !doneToday;
+        });
+
+        if (active.length === 0) {
+          container.innerHTML = '<div class="no-tasks">NOT CREATED TASKS</div>';
+          return;
+        }
+
+        active.forEach(([taskId, task]) => {
+          const reward = task.reward || 15;
+          const el = document.createElement('div');
+          el.className = 'task-item';
+          el.innerHTML = `
+            <div class="task-info">
+              <div class="task-title">${task.title || 'Task'}</div>
+              <div class="task-reward">+ ${reward} BUMS</div>
+            </div>
+            <button class="task-btn join-btn" id="firebase-task-${taskId}">JOIN</button>
+          `;
+          container.appendChild(el);
+          const btn = document.getElementById(`firebase-task-${taskId}`);
+          if (btn) btn.onclick = () => startFirebaseTask(taskId, task);
+        });
+      } catch (e) {
+        console.error('loadFirebaseTasks error:', e);
+        const container = document.getElementById('firebase-tasks-container');
+        if (container) container.innerHTML = '<div class="no-tasks">ERROR LOADING TASKS</div>';
+      }
+    }
+
+    // JOIN: open link + countdown, no status writes/checks
+    function startFirebaseTask(taskId, task) {
+      const btn = document.getElementById(`firebase-task-${taskId}`);
+      if (!btn) return;
+      if (task.link) window.open(task.link, '_blank');
+      let t = 8;
+      btn.className = 'task-btn countdown-btn';
+      btn.disabled = true;
+      const iv = setInterval(() => {
+        btn.textContent = t + 's';
+        t--;
+        if (t < 0) {
+          clearInterval(iv);
+          btn.className = 'task-btn claim-btn';
+          btn.textContent = 'CLAIM';
+          btn.disabled = false;
+          btn.onclick = () => claimFirebaseTask(taskId, task);
+        }
+      }, 1000);
+    }
+
+    // CLAIM: no Firebase 'status done' verification
+    async function claimFirebaseTask(taskId, task) {
+      const btn = document.getElementById(`firebase-task-${taskId}`);
+      if (!btn) return;
+      try {
+        const userRef = ref(db, 'users/' + userKey);
+        const taskRef = ref(db, 'tasks/' + taskId);
+        const [uSnap, tSnap] = await Promise.all([get(userRef), get(taskRef)]);
+        const uData = uSnap.val() || {};
+        const tData = tSnap.val() || {};
+
+        const completedField = `completedTask_${taskId}`;
+        const today = todayStr();
+
+        // already claimed today
+        if (uData[completedField] === today) {
+          showSnackbar('Already claimed today!', true);
+          btn.className = 'task-btn claimed-btn';
+          btn.textContent = 'CLAIMED';
+          btn.disabled = true;
+          btn.onclick = null;
+          return;
+        }
+
+        // capacity check
+        const current = tData.currentCompletions || 0;
+        const max     = tData.maxCompletions || 0;
+        if (current >= max) {
+          showSnackbar('Task completed by maximum users!', true);
+          btn.className = 'task-btn claimed-btn';
+          btn.textContent = 'FULL';
+          btn.disabled = true;
+          btn.onclick = null;
+          return;
+        }
+
+        // reward apply
+        const reward  = task.reward || 15;
+        const newBums = (uData.dogs ?? 0) + reward;
+
+        // user updates
+        await update(userRef, { dogs: newBums, [completedField]: today });
+        await incrementTotals(reward, 'BUMS', 1);
+
+        // task counters
+        const next = current + 1;
+        const updatedBy = [...(tData.completedBy || []), userKey];
+        const taskUpdates = { currentCompletions: next, completedBy: updatedBy };
+        if (next >= max) taskUpdates.status = 'completed';
+        await update(taskRef, taskUpdates);
+
+        // UI update
+        currentBumsBalance = newBums;
+        document.getElementById('dogs-balance').textContent = String(newBums);
+        btn.className = 'task-btn claimed-btn';
+        btn.textContent = 'CLAIMED';
+        btn.disabled = true;
+        btn.onclick = null;
+
+        showSnackbar(`🎉 You got ${reward} BUMS`);
+        setTimeout(() => { loadFirebaseTasks(); }, 800);
+      } catch (e) {
+        console.error('claimFirebaseTask error:', e);
+        showSnackbar('Error claiming reward!', true);
+      }
+    }
+
+    // Promo code
+    window.redeemPromoCode = async function() {
+      const promoInput = document.getElementById("promo-code-input");
+      const promoBtn   = document.getElementById("promo-code-btn");
+      if (!promoInput || !promoBtn) return;
+
+      const promoCode = promoInput.value.trim().toUpperCase();
+      if (!promoCode) { showSnackbar("Please enter a promo code", true); return; }
+
+      promoBtn.disabled = true;
+      promoBtn.textContent = 'CHECKING...';
+
+      try {
+        const promoRef = ref(db, 'promoCodes/' + promoCode);
+        const promoSnap = await get(promoRef);
+        if (!promoSnap.exists()) { showSnackbar("Invalid promo code", true); return; }
+
+        const promo = promoSnap.val() || {};
+        if (!promo.active) { showSnackbar("Promo code has expired", true); return; }
+
+        const usedCount = promo.usedCount || 0;
+        const maxUses = promo.maxUses || 1000;
+        if (usedCount >= maxUses) { showSnackbar("Promo code usage limit reached", true); return; }
+
+        const userRef = ref(db, 'users/' + userKey);
+        const userSnap = await get(userRef);
+        const userData = userSnap.val() || {};
+        const usedPromosField = 'usedPromoCodes';
+        const usedPromos = userData[usedPromosField] || [];
+        if (usedPromos.includes(promoCode)) { showSnackbar("You have already used this promo code", true); return; }
+
+        if (promo.expiryDate && new Date() > new Date(promo.expiryDate)) { showSnackbar("Promo code has expired", true); return; }
+
+        const rewardAmount   = Number(promo.rewardAmount || 100);
+        const rewardCurrency = (promo.rewardCurrency || 'BUMS').toUpperCase();
+
+        let newData = {
+          dogs: userData.dogs || 0,
+          usdt: userData.usdt || 0,
+          ton:  userData.ton  || 0
+        };
+        if (rewardCurrency === 'BUMS' || rewardCurrency === 'DOGS') {
+          newData.dogs += rewardAmount;
+        } else if (rewardCurrency === 'USDT') {
+          newData.usdt += rewardAmount;
+        } else if (rewardCurrency === 'TON') {
+          newData.ton += rewardAmount;
+        }
+
+        const updatedUsedPromos = [...usedPromos, promoCode];
+        await update(userRef, { ...newData, [usedPromosField]: updatedUsedPromos });
+        await incrementTotals(rewardAmount, rewardCurrency, 1);
+
+        currentBumsBalance = newData.dogs;
+        document.getElementById('dogs-balance').textContent = String(newData.dogs);
+        promoInput.value = '';
+
+        showSnackbar(`🎉 Promo code redeemed! +${rewardAmount} ${rewardCurrency}`);
+        await update(promoRef, { usedCount: usedCount + 1, lastUsed: new Date().toISOString() });
+      } catch (e) {
+        console.error('redeemPromoCode error:', e);
+        showSnackbar('Error processing promo code', true);
+      } finally {
+        promoBtn.disabled = false;
+        promoBtn.textContent = 'REDEEM';
+      }
+    };
+
+    // Init
+    async function init() {
+      try {
+        await loadUserData();
+        await loadFirebaseTasks();
+      } catch (e) {
+        console.error('Init failed:', e);
+        showSnackbar('Init failed. Check connection.', true);
+      }
+    }
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
+  </script>
+</body>
+</html>

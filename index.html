@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <title>PANDA COMBAT - Telegram Mini App</title>
+  <meta name="viewport" content="width=340, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #ffffff;
+      font-family: 'Inter', Arial, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-size: 14px;
+    }
+    .container { width: 340px; margin: 0 auto; padding: 15px 10px 110px 10px; }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 12px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .header-title { font-size: 0.95em; font-weight: 700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+    .balance-card {
+      background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+      border-radius: 12px; padding: 12px; margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .balance-title { font-size: 0.85em; font-weight: 600; margin-bottom: 8px; color: #f0f0f0; text-transform: uppercase; letter-spacing: 0.8px; text-align: center; }
+    .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .balance-item { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+    .balance-label { font-weight: 500; color: #b0b0b0; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .balance-value { font-weight: 700; font-size: 1.1em; color: #4ade80; display: block; }
+    .balance-sub { font-size: 0.75em; color: #9ca3af; margin-top: 2px; display: block; }
+
+    .menu-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .menu-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: pointer; transition: transform .15s ease, background .2s ease, border-color .2s ease;
+    }
+    .menu-item:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.2); }
+    .menu-icon {
+      width: 42px; height: 42px; border-radius: 10px; flex: 0 0 42px;
+      display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 0.85em;
+      box-shadow: inset 0 0 15px rgba(255,255,255,0.08), 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .icon-spin     { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .icon-tickets  { background: linear-gradient(135deg, #fb923c, #f97316); }
+    .icon-treasure { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+    .menu-text { flex: 1; }
+    .menu-title { font-size: 1em; font-weight: 700; letter-spacing: 0.2px; }
+    .menu-sub { font-size: 0.82em; color: #c8d0e3; margin-top: 2px; }
+    .menu-chevron {
+      width: 18px; height: 18px; background: #cfd6e6;
+      mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23000" d="M9.29 6.71a1 1 0 011.42 0l4.59 4.59a1 1 0 010 1.4l-4.59 4.59a1 1 0 01-1.42-1.4L12.17 12 9.3 9.11a1 1 0 010-1.4z"/></svg>') center/contain no-repeat;
+      opacity: .85;
+    }
+
+    .promo-section { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 12px; padding: 14px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .promo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .promo-title { font-size: 0.9em; font-weight: 600; color: #f0f0f0; text-transform: uppercase; letter-spacing: 0.8px; }
+    .create-btn { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.75em; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s; box-shadow: 0 2px 8px rgba(239,68,68,0.3); }
+    .create-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(239,68,68,0.4); }
+    .promo-input-container { display: flex; gap: 8px; align-items: stretch; }
+    .promo-code-input { flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-size: 0.9em; font-weight: 500; outline: none; transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.5px; }
+    .promo-code-input:focus { border-color: #8b5cf6; background: rgba(255,255,255,0.1); box-shadow: 0 0 0 2px rgba(139,92,246,0.2); }
+    .promo-code-input::placeholder { color: #9ca3af; text-transform: none; letter-spacing: normal; }
+    .promo-code-btn { padding: 10px 18px; border-radius: 8px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border: none; color: white; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 8px rgba(139,92,246,0.3); transition: all 0.3s; font-size: 0.85em; min-width: 70px; }
+    .promo-code-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(139,92,246,0.4); }
+    .promo-code-btn:disabled { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Daily tasks */
+    .tasks-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-radius: 12px; padding: 14px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .tasks-title { font-size: 0.9em; font-weight: 600; color: #f0f0f0; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+    .task-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px; border-radius: 10px; background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.12); margin-bottom: 8px; }
+    .task-left { display: flex; align-items: center; gap: 10px; }
+    .task-icon { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; font-size: 1em; box-shadow: inset 0 0 15px rgba(255,255,255,0.08), 0 4px 12px rgba(0,0,0,0.2); }
+    .task-icon.checkin { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .task-icon.share   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    .task-icon.update  { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .task-text { display: flex; flex-direction: column; }
+    .task-title { font-weight: 700; font-size: 0.95em; }
+    .task-sub { font-size: 0.8em; color: #c8d0e3; }
+    .task-btn { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.85em; font-weight: 700; cursor: pointer; min-width: 92px; box-shadow: 0 2px 8px rgba(139,92,246,0.3); }
+    .task-btn:disabled { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); cursor: not-allowed; }
+    .done-badge { font-size: 0.78em; color: #4ade80; font-weight: 700; }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 340px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 20px 20px 0 0; padding: 16px 8px; display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 6px 4px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); min-width: 45px; flex: 1; margin: 0 2px; transition: all 0.2s; }
+    .nav-item:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .nav-icon { width: 20px; height: 20px; margin-bottom: 3px; background: #fff; mask-size: contain; mask-repeat: no-repeat; mask-position: center; }
+    .nav-home .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'/%3E%3C/svg%3E"); }
+    /* New WIN icon (star) */
+    .nav-win .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E"); }
+    .nav-ads .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'/%3E%3C/svg%3E"); }
+    .nav-refer .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'/%3E%3C/svg%3E"); }
+    .nav-task .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E"); }
+    .nav-wallet .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 00-3 3z'/%3E%3C/svg%3E"); }
+    .nav-label { font-size: 0.65em; font-weight: 500; color: #e0e0e0; text-transform: uppercase; letter-spacing: 0.3px; }
+
+    #snackbar { display: none; position: fixed; top: 18px; left: 50%; transform: translateX(-50%); background: #059669; color: white; padding: 12px 24px; border-radius: 24px; z-index: 2001; font-weight: 600; font-size: 1em; box-shadow: 0 4px 16px rgba(5,150,105,0.4); transition: opacity 0.4s; opacity: 1; letter-spacing: 0.5px; }
+    #snackbar.error { background: #ef4444; box-shadow: 0 4px 16px rgba(239,68,68,0.4); }
+
+    @media (max-width: 360px) { .container { width: 100%; padding: 10px 5px 110px 5px; } .bottom-nav { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><div class="header-title" id="telegram-id">Loading User...</div></div>
+
+    <div class="balance-card">
+      <div class="balance-title">Your Balance</div>
+      <div class="balance-grid">
+        <div class="balance-item">
+          <div class="balance-label">BUMS</div>
+          <span class="balance-value" id="bums-balance">...</span>
+          <span class="balance-sub" id="bums-in-ton">≈ 0 TON</span>
+        </div>
+        <div class="balance-item">
+          <div class="balance-label">TON</div>
+          <span class="balance-value" id="ton-balance">...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-list">
+      <div class="menu-item" onclick="location.href='spin.html'">
+        <div class="menu-icon icon-spin">🎯</div>
+        <div class="menu-text">
+          <div class="menu-title">SPIN AND WIN</div>
+          <div class="menu-sub">Try luck and win BUMS</div>
+        </div>
+        <div class="menu-chevron"></div>
+      </div>
+
+      <div class="menu-item" onclick="location.href='tickets.html'">
+        <div class="menu-icon icon-tickets">🎟️</div>
+        <div class="menu-text">
+          <div class="menu-title">Tickets</div>
+          <div class="menu-sub">Enter draws and events</div>
+        </div>
+        <div class="menu-chevron"></div>
+      </div>
+
+      <div class="menu-item" onclick="location.href='treasure.html'">
+        <div class="menu-icon icon-treasure">🔑</div>
+        <div class="menu-text">
+          <div class="menu-title">Treasure</div>
+          <div class="menu-sub">Hidden chests with rewards</div>
+        </div>
+        <div class="menu-chevron"></div>
+      </div>
+    </div>
+
+    <div class="promo-section">
+      <div class="promo-header">
+        <div class="promo-title">Promo Code</div>
+        <button class="create-btn" onclick="goToGiftCreate()">CREATE GIFT</button>
+      </div>
+      <div class="promo-input-container">
+        <input type="text" id="promo-code-input" class="promo-code-input" placeholder="Enter code" maxlength="20" />
+        <button id="promo-code-btn" class="promo-code-btn" onclick="redeemPromoCode()">CLAIM</button>
+      </div>
+    </div>
+
+    <!-- Daily Tasks -->
+    <div class="tasks-card">
+      <div class="tasks-title">Daily Tasks</div>
+
+      <div class="task-item">
+        <div class="task-left">
+          <div class="task-icon checkin">📅</div>
+          <div class="task-text">
+            <div class="task-title">Daily Check‑in</div>
+            <div class="task-sub">Claim 15 BUMS once today</div>
+          </div>
+        </div>
+        <div>
+          <span id="checkin-status" class="done-badge" style="display:none;">Done</span>
+          <button id="btn-checkin" class="task-btn" onclick="dailyCheckin()">Claim</button>
+        </div>
+      </div>
+
+      <div class="task-item">
+        <div class="task-left">
+          <div class="task-icon share">📤</div>
+          <div class="task-text">
+            <div class="task-title">Share App</div>
+            <div class="task-sub">Send invite DM and earn 15 BUMS</div>
+          </div>
+        </div>
+        <div>
+          <span id="share-status" class="done-badge" style="display:none;">Done</span>
+          <button id="btn-share" class="task-btn" onclick="shareApp()">Share</button>
+        </div>
+      </div>
+
+      <div class="task-item">
+        <div class="task-left">
+          <div class="task-icon update">📢</div>
+          <div class="task-text">
+            <div class="task-title">Check Update</div>
+            <div class="task-sub">Open channel and get 15 BUMS</div>
+          </div>
+        </div>
+        <div>
+          <span id="update-status" class="done-badge" style="display:none;">Done</span>
+          <button id="btn-update" class="task-btn" onclick="checkUpdate()">Open</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="snackbar"></div>
+
+  <div class="bottom-nav">
+    <div class="nav-item nav-home" onclick="window.location.href='index.html'">
+      <div class="nav-icon"></div><span class="nav-label">Home</span>
+    </div>
+    <!-- New WIN between Home and Ads -->
+    
+    <div class="nav-item nav-ads" onclick="window.location.href='ads.html'">
+      <div class="nav-icon"></div><span class="nav-label">Ads</span>
+    </div>
+    <div class="nav-item nav-refer" onclick="window.location.href='refer.html'">
+      <div class="nav-icon"></div><span class="nav-label">Refer</span>
+    </div>
+    <div class="nav-item nav-task" onclick="window.location.href='tasks.html'">
+      <div class="nav-icon"></div><span class="nav-label">Tasks</span>
+    </div>
+    <div class="nav-item nav-wallet" onclick="window.location.href='wallet.html'">
+      <div class="nav-icon"></div><span class="nav-label">Wallet</span>
+    </div>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getDatabase, ref, get, set, update, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  function showSnackbar(msg, isError = false) {
+    const bar = document.getElementById('snackbar');
+    if (!bar) return;
+    bar.textContent = msg;
+    bar.className = isError ? 'error' : '';
+    bar.style.display = 'block';
+    bar.style.opacity = 1;
+    setTimeout(() => { bar.style.opacity = 0; setTimeout(() => { bar.style.display = 'none'; }, 400); }, isError ? 4000 : 3000);
+  }
+
+  window.goToGiftCreate = function() { window.location.href = 'create.html#gift'; };
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBv4V4zPlUlbotICs5JVVJVfeZ_wesBCQI",
+    authDomain: "momey-bims.firebaseapp.com",
+    databaseURL: "https://momey-bims-default-rtdb.firebaseio.com",
+    projectId: "momey-bims",
+    storageBucket: "momey-bims.firebasestorage.app",
+    messagingSenderId: "21496105095",
+    appId: "1:21496105095:web:cbd7b39dada8f0b671d022",
+    measurementId: "G-ECE8ZBS23B"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  window.Telegram?.WebApp?.ready?.();
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const userKey = tgUser ? String(tgUser.id) : "NOT_APP";
+  const headerEl = document.getElementById("telegram-id");
+  if (headerEl) headerEl.textContent = tgUser ? (tgUser.username ? "@" + tgUser.username : "ID: " + tgUser.id) : "NOT_APP";
+
+  const byId = (id) => document.getElementById(id);
+
+  // Conversion: 1 BUMS = 0.00002 TON (fixed app rate)
+  const BUMS_TO_TON = 0.00002;
+  const TASK_REWARD_BUMS = 15;
+
+  function renderBumsTon(bums) {
+    const el = byId('bums-in-ton');
+    const val = Number(bums || 0) * BUMS_TO_TON;
+    if (el) el.textContent = `≈ ${val.toFixed(6)} TON`;
+  }
+
+  function getToday() {
+    // ISO date (UTC) is fine for daily gating; adjust if timezone-specific reset is needed
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  async function incrementTotals(amount, currency = 'BUMS', doneInc = 1) {
+    const totalEarnRef  = ref(db, `users/${userKey}/totalEarn`);
+    const byCurrRef     = ref(db, `users/${userKey}/totalEarnBy/${currency}`);
+    const taskDoneRef   = ref(db, `users/${userKey}/taskDone`);
+    await Promise.all([
+      runTransaction(totalEarnRef, (cur) => (cur ?? 0) + Number(amount)),
+      runTransaction(byCurrRef,    (cur) => (cur ?? 0) + Number(amount)),
+      runTransaction(taskDoneRef,  (cur) => (cur ?? 0) + Number(doneInc)),
+    ]);
+  }
+
+  async function loadUserData() {
+    try {
+      const userRef = ref(db, 'users/' + userKey);
+      const snap = await get(userRef);
+      let data = {};
+      if (snap.exists()) {
+        data = snap.val() || {};
+      } else {
+        data = { bums: 10, ton: 0.00, totalEarn: 0, adsWatch: 0, taskDone: 0, DailyStreak: 0, taskDates: {} };
+        await set(userRef, data);
+      }
+
+      const bumsVal = Number(data.bums ?? 0);
+      const tonVal  = Number(data.ton  ?? 0);
+      const tdates  = data.taskDates || {};
+
+      byId('bums-balance') && (byId('bums-balance').textContent = String(bumsVal));
+      byId('ton-balance')  && (byId('ton-balance').textContent  = String(tonVal.toFixed(4)));
+      renderBumsTon(bumsVal);
+
+      // Update tasks UI for today
+      const today = getToday();
+      setTaskDoneUI('checkin', tdates.checkin === today);
+      setTaskDoneUI('share',   tdates.share   === today);
+      setTaskDoneUI('update',  tdates.update  === today);
+    } catch (err) {
+      console.error('loadUserData error:', err);
+      showSnackbar('Failed to load user data', true);
+    }
+  }
+
+  function setTaskDoneUI(task, done) {
+    const map = {
+      checkin: { btn: 'btn-checkin', badge: 'checkin-status', labelDone: 'Claimed', labelGo: 'Claim' },
+      share:   { btn: 'btn-share',   badge: 'share-status',   labelDone: 'Shared', labelGo: 'Share' },
+      update:  { btn: 'btn-update',  badge: 'update-status',  labelDone: 'Checked', labelGo: 'Open' },
+    };
+    const ref = map[task];
+    if (!ref) return;
+    const btn = byId(ref.btn);
+    const badge = byId(ref.badge);
+    if (btn) {
+      btn.disabled = !!done;
+      btn.textContent = done ? ref.labelDone : ref.labelGo;
+    }
+    if (badge) {
+      badge.style.display = done ? 'inline-block' : 'none';
+    }
+  }
+
+  async function awardDaily(taskKey) {
+    if (userKey === 'NOT_APP') { showSnackbar('Open inside Telegram', true); return false; }
+    const userRef = ref(db, 'users/' + userKey);
+    const snap = await get(userRef);
+    const data = snap.val() || {};
+    const tdates = data.taskDates || {};
+    const today = getToday();
+
+    if (tdates[taskKey] === today) {
+      showSnackbar('Already completed today', true);
+      return false;
+    }
+
+    const newBums = Number(data.bums || 0) + TASK_REWARD_BUMS;
+    const newDates = { ...tdates, [taskKey]: today };
+
+    await update(userRef, { bums: newBums, taskDates: newDates });
+    await incrementTotals(TASK_REWARD_BUMS, 'BUMS', 1);
+
+    byId('bums-balance') && (byId('bums-balance').textContent = String(newBums));
+    renderBumsTon(newBums);
+
+    setTaskDoneUI(taskKey, true);
+    showSnackbar(`+${TASK_REWARD_BUMS} BUMS`);
+    return true;
+  }
+
+  window.dailyCheckin = async function () {
+    await awardDaily('checkin');
+  };
+
+  window.shareApp = async function () {
+    // First award if not already done today, then open share
+    const ok = await awardDaily('share');
+    // Build prefilled DM/share text with referral link
+    const text = [
+      '✅ Get TON in the app for completing simple tasks.',
+      '',
+      `https://t.me/moneybums_bot?start=${userKey}`,
+      '',
+      '➕ Add your tasks and get referrals and subscribers.'
+    ].join('\
+');
+
+    const link = 'https://t.me/share/url?text=' + encodeURIComponent(text);
+    try {
+      window.Telegram?.WebApp?.openTelegramLink?.(link);
+    } catch (e) {
+      window.open(link, '_blank');
+    }
+    return ok;
+  };
+
+  window.checkUpdate = async function () {
+    // First award if not already done today, then open channel
+    const ok = await awardDaily('update');
+    const channel = 'https://t.me/moneybums_channel';
+    try {
+      window.Telegram?.WebApp?.openTelegramLink?.(channel);
+    } catch (e) {
+      window.open(channel, '_blank');
+    }
+    return ok;
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadUserData);
+  } else {
+    loadUserData();
+  }
+
+  // Existing promo code logic (unchanged)
+  async function incrementTotalsPromo(amount, currency = 'BUMS', doneInc = 1) {
+    return incrementTotals(amount, currency, doneInc);
+  }
+
+  window.redeemPromoCode = async function() {
+    const input = byId('promo-code-input');
+    const btn   = byId('promo-code-btn');
+    if (!input || !btn) return;
+
+    const promoCode = input.value.trim().toUpperCase();
+    if (!promoCode) { showSnackbar('Please enter a promo code', true); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'CHECKING...';
+
+    try {
+      const promoRef = ref(db, 'promoCodes/' + promoCode);
+      const promoSnap = await get(promoRef);
+      if (!promoSnap.exists()) { showSnackbar('Invalid promo code', true); return; }
+      const promo = promoSnap.val() || {};
+
+      if (!promo.active) { showSnackbar('Promo code is inactive', true); return; }
+      const usedCount = Number(promo.usedCount || 0);
+      const maxUses   = Number(promo.maxUses ?? 1000);
+      if (usedCount >= maxUses) { showSnackbar('Promo usage limit reached', true); return; }
+      if (promo.expiryDate && new Date() > new Date(promo.expiryDate)) { showSnackbar('Promo code has expired', true); return; }
+
+      const userRef = ref(db, 'users/' + userKey);
+      const userSnap = await get(userRef);
+      const userData = userSnap.val() || {};
+      const usedList = Array.isArray(userData.usedPromoCodes) ? userData.usedPromoCodes : [];
+      if (usedList.includes(promoCode)) { showSnackbar('Promo already used', true); return; }
+
+      const currency = String(promo.rewardCurrency || 'BUMS').toUpperCase();
+      const amount   = Number(promo.rewardAmount || 0);
+
+      const newUser = {
+        bums: Number(userData.bums || 0),
+        ton:  Number(userData.ton  || 0)
+      };
+      if (currency === 'BUMS') newUser.bums += amount;
+      else if (currency === 'TON') newUser.ton += amount;
+
+      await update(userRef, { ...newUser, usedPromoCodes: [...usedList, promoCode] });
+      await incrementTotalsPromo(amount, currency, 1);
+
+      byId('bums-balance') && (byId('bums-balance').textContent = String(newUser.bums));
+      byId('ton-balance')  && (byId('ton-balance').textContent  = String(newUser.ton.toFixed(4)));
+      renderBumsTon(newUser.bums);
+
+      input.value = '';
+      showSnackbar(`🎉 Promo redeemed! +${amount} ${currency}`);
+    } catch (err) {
+      console.error('redeemPromoCode error:', err);
+      showSnackbar('Error processing promo code', true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'CLAIM';
+    }
+  };
+  </script>
+</body>
+</html>

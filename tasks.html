@@ -61,22 +61,6 @@
     .claimed-btn { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: #d1d5db; cursor: not-allowed; box-shadow: none; }
     .no-tasks { text-align: center; color: #9ca3af; font-weight: 500; padding: 20px; font-size: 0.95em; letter-spacing: 0.5px; }
 
-    /* Promo Code Section */
-    .promo-input-container { display: flex; gap: 8px; align-items: center; }
-    .promo-input {
-      flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05); color: #fff; font-size: 0.9em; outline: none; transition: all 0.3s; text-transform: uppercase;
-    }
-    .promo-input:focus { border-color: #8b5cf6; background: rgba(255,255,255,0.1); box-shadow: 0 0 0 2px rgba(139,92,246,0.2); }
-    .promo-input::placeholder { color: #9ca3af; text-transform: none; }
-    .promo-btn {
-      padding: 10px 20px; border-radius: 12px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-      border: none; color: white; font-weight: 600; cursor: pointer; text-transform: uppercase; box-shadow: 0 2px 8px rgba(139,92,246,0.3);
-      transition: all 0.3s; font-size: 0.9em; letter-spacing: 0.5px;
-    }
-    .promo-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
-    .promo-btn:disabled { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); cursor: not-allowed; transform: none; box-shadow: none; }
-
     @keyframes pulse { 0% { transform: scale(1);} 50% { transform: scale(1.05);} 100% { transform: scale(1);} }
 
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 340px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 20px 20px 0 0; padding: 16px 8px; display: flex; justify-content: space-around; align-items: center; z-index: 100; }
@@ -102,15 +86,7 @@
 
     <div class="balance-display">
       <div class="balance-label">Current BUMS Balance:</div>
-      <div class="balance-value" id="dogs-balance">...</div>
-    </div>
-
-    <div class="tasks-section">
-      <div class="section-title">PROMO CODE</div>
-      <div class="promo-input-container">
-        <input type="text" id="promo-code-input" class="promo-input" placeholder="Enter promo code" maxlength="20"/>
-        <button id="promo-code-btn" class="promo-btn" onclick="redeemPromoCode()">REDEEM</button>
-      </div>
+      <div class="balance-value" id="bums-balance">...</div>
     </div>
 
     <div class="tasks-section">
@@ -207,13 +183,13 @@
         if (snap.exists()) {
           data = snap.val() || {};
         } else {
-          await set(userRef, { dogs: 10 });
-          data = { dogs: 10 };
+          await set(userRef, { bums: 10 });
+          data = { bums: 10 };
         }
-        currentBumsBalance = data.dogs ?? 0;
-        document.getElementById('dogs-balance').textContent = String(currentBumsBalance);
+        currentBumsBalance = data.bums ?? 0;
+        document.getElementById('bums-balance').textContent = String(currentBumsBalance);
       } catch (e) {
-        document.getElementById('dogs-balance').textContent = 'ERR';
+        document.getElementById('bums-balance').textContent = 'ERR';
         console.error('loadUserData error:', e);
       }
     }
@@ -271,7 +247,7 @@
       }
     }
 
-    // JOIN: open link + countdown, no status writes/checks
+    // JOIN: open link + countdown
     function startFirebaseTask(taskId, task) {
       const btn = document.getElementById(`firebase-task-${taskId}`);
       if (!btn) return;
@@ -292,7 +268,7 @@
       }, 1000);
     }
 
-    // CLAIM: no Firebase 'status done' verification
+    // CLAIM
     async function claimFirebaseTask(taskId, task) {
       const btn = document.getElementById(`firebase-task-${taskId}`);
       if (!btn) return;
@@ -330,10 +306,10 @@
 
         // reward apply
         const reward  = task.reward || 15;
-        const newBums = (uData.dogs ?? 0) + reward;
+        const newBums = (uData.bums ?? 0) + reward;
 
         // user updates
-        await update(userRef, { dogs: newBums, [completedField]: today });
+        await update(userRef, { bums: newBums, [completedField]: today });
         await incrementTotals(reward, 'BUMS', 1);
 
         // task counters
@@ -345,7 +321,7 @@
 
         // UI update
         currentBumsBalance = newBums;
-        document.getElementById('dogs-balance').textContent = String(newBums);
+        document.getElementById('bums-balance').textContent = String(newBums);
         btn.className = 'task-btn claimed-btn';
         btn.textContent = 'CLAIMED';
         btn.disabled = true;
@@ -358,74 +334,6 @@
         showSnackbar('Error claiming reward!', true);
       }
     }
-
-    // Promo code
-    window.redeemPromoCode = async function() {
-      const promoInput = document.getElementById("promo-code-input");
-      const promoBtn   = document.getElementById("promo-code-btn");
-      if (!promoInput || !promoBtn) return;
-
-      const promoCode = promoInput.value.trim().toUpperCase();
-      if (!promoCode) { showSnackbar("Please enter a promo code", true); return; }
-
-      promoBtn.disabled = true;
-      promoBtn.textContent = 'CHECKING...';
-
-      try {
-        const promoRef = ref(db, 'promoCodes/' + promoCode);
-        const promoSnap = await get(promoRef);
-        if (!promoSnap.exists()) { showSnackbar("Invalid promo code", true); return; }
-
-        const promo = promoSnap.val() || {};
-        if (!promo.active) { showSnackbar("Promo code has expired", true); return; }
-
-        const usedCount = promo.usedCount || 0;
-        const maxUses = promo.maxUses || 1000;
-        if (usedCount >= maxUses) { showSnackbar("Promo code usage limit reached", true); return; }
-
-        const userRef = ref(db, 'users/' + userKey);
-        const userSnap = await get(userRef);
-        const userData = userSnap.val() || {};
-        const usedPromosField = 'usedPromoCodes';
-        const usedPromos = userData[usedPromosField] || [];
-        if (usedPromos.includes(promoCode)) { showSnackbar("You have already used this promo code", true); return; }
-
-        if (promo.expiryDate && new Date() > new Date(promo.expiryDate)) { showSnackbar("Promo code has expired", true); return; }
-
-        const rewardAmount   = Number(promo.rewardAmount || 100);
-        const rewardCurrency = (promo.rewardCurrency || 'BUMS').toUpperCase();
-
-        let newData = {
-          dogs: userData.dogs || 0,
-          usdt: userData.usdt || 0,
-          ton:  userData.ton  || 0
-        };
-        if (rewardCurrency === 'BUMS' || rewardCurrency === 'DOGS') {
-          newData.dogs += rewardAmount;
-        } else if (rewardCurrency === 'USDT') {
-          newData.usdt += rewardAmount;
-        } else if (rewardCurrency === 'TON') {
-          newData.ton += rewardAmount;
-        }
-
-        const updatedUsedPromos = [...usedPromos, promoCode];
-        await update(userRef, { ...newData, [usedPromosField]: updatedUsedPromos });
-        await incrementTotals(rewardAmount, rewardCurrency, 1);
-
-        currentBumsBalance = newData.dogs;
-        document.getElementById('dogs-balance').textContent = String(newData.dogs);
-        promoInput.value = '';
-
-        showSnackbar(`🎉 Promo code redeemed! +${rewardAmount} ${rewardCurrency}`);
-        await update(promoRef, { usedCount: usedCount + 1, lastUsed: new Date().toISOString() });
-      } catch (e) {
-        console.error('redeemPromoCode error:', e);
-        showSnackbar('Error processing promo code', true);
-      } finally {
-        promoBtn.disabled = false;
-        promoBtn.textContent = 'REDEEM';
-      }
-    };
 
     // Init
     async function init() {

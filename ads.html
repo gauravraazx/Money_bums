@@ -97,7 +97,7 @@
 
       <div class="ad-item">
         <div class="ad-title">💎 Premium Video Ad</div>
-        <div class="ad-reward">+ 6 BUMS per ad</div>
+        <div class="ad-reward">+ 2 BUMS per ad</div>
 
         <div class="progress-row">
           <div class="progress-label"><span>View progress</span><span id="premium-view-text">0/25</span></div>
@@ -111,7 +111,7 @@
 
       <div class="ad-item">
         <div class="ad-title">🚀 Sponsored Content</div>
-        <div class="ad-reward">+ 6 BUMS per view</div>
+        <div class="ad-reward">+ 2 BUMS per view</div>
 
         <div class="progress-row">
           <div class="progress-label"><span>View progress</span><span id="sponsored-view-text">0/25</span></div>
@@ -309,8 +309,8 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       await loadAndRender();
-      document.getElementById('ad-button-premium').onclick   = () => handleWatchAd('ad-button-premium', 6);
-      document.getElementById('ad-button-sponsored').onclick = () => handleWatchAd('ad-button-sponsored', 6);
+      document.getElementById('ad-button-premium').onclick   = () => handleWatchAd('ad-button-premium', 2);
+      document.getElementById('ad-button-sponsored').onclick = () => handleWatchAd('ad-button-sponsored', 2);
     });
   </script>
 </body>

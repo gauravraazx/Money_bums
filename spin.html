@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <title>SPIN AND WIN</title>
+  <meta name="viewport" content="width=340, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+      color:#fff;font-family:'Inter',Arial,sans-serif;min-height:100vh;overflow-x:hidden;font-size:14px
+    }
+    .container{width:340px;margin:0 auto;padding:16px 10px 96px 10px}
+
+    .header{
+      text-align:center;margin-bottom:12px;
+      background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,.1);
+      box-shadow:0 8px 20px rgba(102,126,234,.35)
+    }
+    .header-title{font-size:.95em;font-weight:700;letter-spacing:.8px}
+
+    .wheel-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:16px 12px 18px 12px;
+      box-shadow:0 10px 28px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      position:relative;
+    }
+    .pointer{
+      position:absolute;top:6px;left:50%;transform:translateX(-50%);
+      width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:16px solid #ffd166;
+      filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));z-index:5;
+    }
+    .wheel-wrap{display:grid;place-items:center;margin-top:14px;margin-bottom:18px}
+    .wheel{
+      width:280px;height:280px;border-radius:50%;
+      background:conic-gradient(
+        #ef4444 0deg 45deg,#60a5fa 45deg 90deg,#22c55e 90deg 135deg,#f59e0b 135deg 180deg,
+        #14b8a6 180deg 225deg,#a78bfa 225deg 270deg,#fb7185 270deg 315deg,#38bdf8 315deg 360deg
+      );
+      position:relative;transition:transform 4.2s cubic-bezier(.15,.7,.1,1);
+      box-shadow:inset 0 0 0 10px rgba(0,0,0,.15), inset 0 0 0 2px rgba(255,255,255,.15), 0 14px 30px rgba(0,0,0,.35);
+    }
+    .wheel::before{content:"";position:absolute;inset:8px;border-radius:50%;border:6px solid rgba(255,255,255,.22);box-shadow:inset 0 0 0 2px rgba(0,0,0,.25)}
+    .wheel::after{
+      content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:80px;height:80px;border-radius:50%;
+      background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.4),rgba(255,255,255,.15) 40%,rgba(0,0,0,.25) 70%);
+      border:4px solid rgba(255,255,255,.35);box-shadow:0 8px 18px rgba(0,0,0,.35), inset 0 2px 6px rgba(255,255,255,.25);z-index:2;
+    }
+
+    .btn{
+      width:100%;padding:14px;border:none;border-radius:14px;font-weight:800;letter-spacing:.5px;
+      color:#fff;cursor:pointer;transition:transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+      display:flex;align-items:center;justify-content:center;font-size:15px
+    }
+    .btn:disabled{opacity:.65;cursor:not-allowed}
+    .spin-btn{background:linear-gradient(135deg,#7c3aed,#6d28d9);box-shadow:0 10px 22px rgba(109,40,217,.35)}
+    .spin-btn:active{transform:translateY(1px)}
+    .icon{margin-right:8px}
+
+    .balance-btn{margin-top:10px;background:linear-gradient(135deg,#0ea5e9,#6366f1);box-shadow:0 8px 18px rgba(99,102,241,.35);font-weight:700}
+
+    #snackbar{display:none;position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#059669;color:#fff;padding:10px 18px;border-radius:22px;z-index:2001;font-weight:700;box-shadow:0 6px 16px rgba(5,150,105,.35)}
+    #snackbar.error{background:#ef4444}
+
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 340px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 20px 20px 0 0; padding: 16px 8px; display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 6px 4px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); min-width: 45px; flex: 1; margin: 0 2px; transition: all 0.2s; }
+    .nav-item:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .nav-icon { width: 20px; height: 20px; margin-bottom: 3px; background: #fff; mask-size: contain; mask-repeat: no-repeat; mask-position: center; }
+    .nav-home .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'/%3E%3C/svg%3E"); }
+    /* New WIN icon (star) */
+    .nav-win .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E"); }
+    .nav-ads .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'/%3E%3C/svg%3E"); }
+    .nav-refer .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'/%3E%3C/svg%3E"); }
+    .nav-task .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E"); }
+    .nav-wallet .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 00-3 3z'/%3E%3C/svg%3E"); }
+    .nav-label { font-size: 0.65em; font-weight: 500; color: #e0e0e0; text-transform: uppercase; letter-spacing: 0.3px; }
+
+    #snackbar { display: none; position: fixed; top: 18px; left: 50%; transform: translateX(-50%); background: #059669; color: white; padding: 12px 24px; border-radius: 24px; z-index: 2001; font-weight: 600; font-size: 1em; box-shadow: 0 4px 16px rgba(5,150,105,0.4); transition: opacity 0.4s; opacity: 1; letter-spacing: 0.5px; }
+    #snackbar.error { background: #ef4444; box-shadow: 0 4px 16px rgba(239,68,68,0.4); }
+
+    @media (max-width: 360px) { .container { width: 100%; padding: 10px 5px 110px 5px; } .bottom-nav { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><div class="header-title" id="tg-name">Loading User...</div></div>
+
+    <div class="wheel-card">
+      <div class="pointer"></div>
+      <div class="wheel-wrap"><div id="wheel" class="wheel"></div></div>
+
+      <button id="spinBtn" class="btn spin-btn"><span class="icon">🎯</span> SPIN</button>
+      <button id="spinBalanceBtn" class="btn balance-btn" disabled>SPINS: <span id="spinBalance" style="margin-left:6px">...</span></button>
+    </div>
+  </div>
+
+  <div id="snackbar"></div>
+
+  <div class="bottom-nav">
+    <div class="nav-item nav-home" onclick="window.location.href='index.html'">
+      <div class="nav-icon"></div><span class="nav-label">Home</span>
+    </div>
+    <!-- New WIN between Home and Ads -->
+    <div class="nav-item nav-win" onclick="window.location.href='win.html'">
+      <div class="nav-icon"></div><span class="nav-label">Win</span>
+    </div>
+    <div class="nav-item nav-ads" onclick="window.location.href='ads.html'">
+      <div class="nav-icon"></div><span class="nav-label">Ads</span>
+    </div>
+    <div class="nav-item nav-refer" onclick="window.location.href='refer.html'">
+      <div class="nav-icon"></div><span class="nav-label">Refer</span>
+    </div>
+    <div class="nav-item nav-task" onclick="window.location.href='tasks.html'">
+      <div class="nav-icon"></div><span class="nav-label">Tasks</span>
+    </div>
+    <div class="nav-item nav-wallet" onclick="window.location.href='wallet.html'">
+      <div class="nav-icon"></div><span class="nav-label">Wallet</span>
+    </div>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, get, set, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    function toast(msg, isError=false){
+      const el = document.getElementById('snackbar');
+      el.textContent = msg;
+      el.className = isError ? 'error' : '';
+      el.style.display = 'block';
+      setTimeout(()=>{ el.style.display='none'; }, isError ? 3600 : 2400);
+    }
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBv4V4zPlUlbotICs5JVVJVfeZ_wesBCQI",
+      authDomain: "momey-bims.firebaseapp.com",
+      databaseURL: "https://momey-bims-default-rtdb.firebaseio.com",
+      projectId: "momey-bims",
+      storageBucket: "momey-bims.firebasestorage.app",
+      messagingSenderId: "21496105095",
+      appId: "1:21496105095:web:cbd7b39dada8f0b671d022",
+      measurementId: "G-ECE8ZBS23B"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    window.Telegram?.WebApp?.ready?.();
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const userKey = tgUser?.id ? String(tgUser.id) : "UNKNOWN_USER";
+    document.getElementById('tg-name').textContent = tgUser?.username ? "@"+tgUser.username : (tgUser?.id ? "ID: "+tgUser.id : "UNKNOWN_USER");
+
+    const wheel = document.getElementById('wheel');
+    const spinBtn = document.getElementById('spinBtn');
+    const spinBalanceEl = document.getElementById('spinBalance');
+
+    // 8 slices prizes in BUMS
+    const PRIZES = [2,4,6,8,10,12,15,20];
+
+    let angle = 0;
+    let spinning = false;
+
+    async function loadSpin(){
+      const sRef = ref(db, 'users/'+userKey+'/spin');
+      const snap = await get(sRef);
+      if (!snap.exists()) await set(sRef, 0);
+      spinBalanceEl.textContent = String(snap.exists() ? (snap.val() ?? 0) : 0);
+    }
+
+    // Safe: never return undefined, fix false "no spins" even if first pass sees null
+    async function spendOneSpin(){
+      const sRef = ref(db, `users/${userKey}/spin`);
+
+      // Pre-read to validate
+      let snap = await get(sRef);
+      let start = Number(snap.val() ?? 0);
+      if (!Number.isFinite(start)) start = parseInt(snap.val(), 10) || 0;
+      if (start <= 0) throw new Error('NO_SPINS');
+
+      const attempt = () => runTransaction(sRef, cur => {
+        let v = Number(cur ?? 0);
+        if (!Number.isFinite(v)) v = parseInt(cur, 10) || 0;
+        return v > 0 ? v - 1 : v; // never undefined
+      });
+
+      let res = await attempt();
+      if (!res.committed) {
+        res = await attempt();
+        if (!res.committed) throw new Error('RETRY_ABORT');
+      }
+      return Number(res.snapshot.val() ?? 0);
+    }
+
+    async function addBums(amount){
+      const bRef = ref(db, 'users/'+userKey+'/bums');
+      await runTransaction(bRef, cur => Number(cur ?? 0) + Number(amount));
+    }
+
+    function randomSpinAngle(){
+      const baseTurns = 360 * 5;
+      const slice = 45;
+      const target = Math.floor(Math.random()*8);
+      const offset = Math.floor(Math.random()*(slice-8)) + 4;
+      return baseTurns + target*slice + offset;
+    }
+    function getWinningIndex(totalAngle){
+      const a = ((360 - (totalAngle % 360)) + 360) % 360;
+      return Math.floor(a / 45) % 8;
+    }
+
+    spinBtn.addEventListener('click', async ()=>{
+      if (spinning) return;
+      try{
+        const left = await spendOneSpin();
+        spinBalanceEl.textContent = String(left);
+
+        spinning = true;
+        spinBtn.disabled = true;
+        spinBtn.textContent = 'SPINNING...';
+
+        const add = randomSpinAngle();
+        angle = (angle + add) % 360000;
+        wheel.style.transform = 'rotate(' + angle + 'deg)';
+
+        setTimeout(async ()=>{
+          const idx = getWinningIndex(angle);
+          const prize = PRIZES[idx];
+          await addBums(prize);
+          toast(`🎉 Won +${prize} BUMS`);
+          spinBtn.textContent = 'SPIN';
+          spinBtn.disabled = false;
+          spinning = false;
+        }, 4300);
+      }catch(e){
+        if (e.message === 'NO_SPINS') toast('No spins available', true);
+        else { console.error(e); toast('Spin failed', true); }
+      }
+    });
+
+    if (document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', loadSpin);
+    }else{
+      loadSpin();
+    }
+  </script>
+</body>
+</html>

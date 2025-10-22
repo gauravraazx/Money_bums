@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Refer & Earn - PANDA COMBAT</title>
+  <meta name="viewport" content="width=340, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #ffffff;
+      font-family: 'Inter', Arial, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-size: 14px;
+    }
+    .container { width: 340px; margin: 0 auto; padding: 15px 10px 90px 10px; }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 12px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .header-title { font-size: 1.1em; font-weight: 700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+    .refer-hero {
+      background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.1));
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 16px;
+      padding: 24px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(34,197,94,0.2);
+    }
+    .refer-icon {
+      font-size: 3.5em;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 4px 8px rgba(34,197,94,0.3));
+    }
+    .refer-title {
+      font-size: 1.3em;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #22c55e, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .refer-subtitle {
+      font-size: 0.9em;
+      color: #d1d5db;
+      line-height: 1.5;
+    }
+
+    .stats-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .stat-item {
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .stat-label {
+      font-size: 0.75em;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .stat-value {
+      font-size: 1.8em;
+      font-weight: 800;
+      color: #22c55e;
+      text-shadow: 0 2px 8px rgba(34,197,94,0.3);
+    }
+
+    .claim-section {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .claim-title {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: #f0f0f0;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .claim-amount {
+      text-align: center;
+      font-size: 2.2em;
+      font-weight: 800;
+      color: #fbbf24;
+      margin-bottom: 14px;
+      text-shadow: 0 2px 12px rgba(251,191,36,0.4);
+    }
+    .claim-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1em;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 16px rgba(34,197,94,0.4);
+      transition: all 0.3s;
+    }
+    .claim-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(34,197,94,0.5);
+    }
+    .claim-btn:disabled {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      opacity: 0.6;
+    }
+
+    .link-section {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .link-title {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: #f0f0f0;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .link-display {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .link-input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 0.85em;
+      font-weight: 500;
+      outline: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .copy-btn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      border: none;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(139,92,246,0.3);
+      transition: all 0.3s;
+      font-size: 0.85em;
+      white-space: nowrap;
+    }
+    .copy-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(139,92,246,0.4);
+    }
+    .share-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1em;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 16px rgba(59,130,246,0.4);
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .share-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59,130,246,0.5);
+    }
+
+    .referral-list-section {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .list-title {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: #f0f0f0;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .list-count {
+      background: rgba(34,197,94,0.2);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.85em;
+      font-weight: 700;
+      color: #22c55e;
+      border: 1px solid rgba(34,197,94,0.3);
+    }
+    .referral-list {
+      max-height: 300px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .referral-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .referral-list::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+    }
+    .referral-list::-webkit-scrollbar-thumb {
+      background: rgba(34,197,94,0.4);
+      border-radius: 10px;
+    }
+    .referral-item {
+      background: rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.2s;
+    }
+    .referral-item:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateX(4px);
+    }
+    .referral-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1em;
+      color: white;
+      flex-shrink: 0;
+    }
+    .referral-info {
+      flex: 1;
+    }
+    .referral-id {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: #f0f0f0;
+      margin-bottom: 2px;
+    }
+    .referral-badge {
+      font-size: 0.75em;
+      color: #22c55e;
+      font-weight: 500;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #9ca3af;
+    }
+    .empty-icon {
+      font-size: 3em;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    .empty-text {
+      font-size: 0.9em;
+      line-height: 1.5;
+    }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 340px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); border-radius: 20px 20px 0 0; padding: 16px 8px; display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; padding: 6px 4px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); min-width: 45px; flex: 1; margin: 0 2px; transition: all 0.2s; }
+    .nav-item:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .nav-icon { width: 20px; height: 20px; margin-bottom: 3px; background: #fff; mask-size: contain; mask-repeat: no-repeat; mask-position: center; }
+    .nav-home .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'/%3E%3C/svg%3E"); }
+    /* New WIN icon (star) */
+    .nav-win .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E"); }
+    .nav-ads .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'/%3E%3C/svg%3E"); }
+    .nav-refer .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'/%3E%3C/svg%3E"); }
+    .nav-task .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E"); }
+    .nav-wallet .nav-icon { mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 00-3 3z'/%3E%3C/svg%3E"); }
+    .nav-label { font-size: 0.65em; font-weight: 500; color: #e0e0e0; text-transform: uppercase; letter-spacing: 0.3px; }
+
+    #snackbar { display: none; position: fixed; top: 18px; left: 50%; transform: translateX(-50%); background: #059669; color: white; padding: 12px 24px; border-radius: 24px; z-index: 2001; font-weight: 600; font-size: 1em; box-shadow: 0 4px 16px rgba(5,150,105,0.4); transition: opacity 0.4s; opacity: 1; letter-spacing: 0.5px; }
+    #snackbar.error { background: #ef4444; box-shadow: 0 4px 16px rgba(239,68,68,0.4); }
+
+    @media (max-width: 360px) { .container { width: 100%; padding: 10px 5px 110px 5px; } .bottom-nav { width: 100%; } }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-title">🎁 REFER & EARN</div>
+    </div>
+
+    <div class="refer-hero">
+      <div class="refer-icon">👥</div>
+      <div class="refer-title">Invite Friends & Earn!</div>
+      <div class="refer-subtitle">Share your referral link and earn rewards when your friends join</div>
+    </div>
+
+    <div class="stats-card">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">Total Refers</div>
+          <div class="stat-value" id="total-refers">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Pending Earn</div>
+          <div class="stat-value" id="refer-earn">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="claim-section">
+      <div class="claim-title">Claim Your Earnings</div>
+      <div class="claim-amount" id="claim-amount">0 BUMS</div>
+      <button class="claim-btn" id="claim-btn" onclick="claimEarnings()">
+        💰 CLAIM EARNINGS
+      </button>
+    </div>
+
+    <div class="link-section">
+      <div class="link-title">Your Referral Link</div>
+      <div class="link-display">
+        <input type="text" class="link-input" id="refer-link" readonly />
+        <button class="copy-btn" onclick="copyReferLink()">COPY</button>
+      </div>
+      <button class="share-btn" onclick="shareReferLink()">
+        <span>📤</span> SHARE ON TELEGRAM
+      </button>
+    </div>
+
+    <div class="referral-list-section">
+      <div class="list-header">
+        <div class="list-title">Your Referrals</div>
+        <div class="list-count" id="list-count">0</div>
+      </div>
+      <div class="referral-list" id="referral-list">
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <div class="empty-text">No referrals yet. Start sharing your link!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="snackbar"></div>
+
+  <div class="bottom-nav">
+    <div class="nav-item nav-home" onclick="window.location.href='index.html'">
+      <div class="nav-icon"></div><span class="nav-label">Home</span>
+    </div>
+    <!-- New WIN between Home and Ads -->
+    <div class="nav-item nav-win" onclick="window.location.href='win.html'">
+      <div class="nav-icon"></div><span class="nav-label">Win</span>
+    </div>
+    <div class="nav-item nav-ads" onclick="window.location.href='ads.html'">
+      <div class="nav-icon"></div><span class="nav-label">Ads</span>
+    </div>
+    <div class="nav-item nav-refer" onclick="window.location.href='refer.html'">
+      <div class="nav-icon"></div><span class="nav-label">Refer</span>
+    </div>
+    <div class="nav-item nav-task" onclick="window.location.href='tasks.html'">
+      <div class="nav-icon"></div><span class="nav-label">Tasks</span>
+    </div>
+    <div class="nav-item nav-wallet" onclick="window.location.href='wallet.html'">
+      <div class="nav-icon"></div><span class="nav-label">Wallet</span>
+    </div>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getDatabase, ref, get, set, update, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  function showSnackbar(msg, isError = false) {
+    const bar = document.getElementById('snackbar');
+    if (!bar) return;
+    bar.textContent = msg;
+    bar.className = isError ? 'error' : '';
+    bar.style.display = 'block';
+    bar.style.opacity = 1;
+    setTimeout(() => {
+      bar.style.opacity = 0;
+      setTimeout(() => { bar.style.display = 'none'; }, 400);
+    }, isError ? 4000 : 3000);
+  }
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBv4V4zPlUlbotICs5JVVJVfeZ_wesBCQI",
+    authDomain: "momey-bims.firebaseapp.com",
+    databaseURL: "https://momey-bims-default-rtdb.firebaseio.com",
+    projectId: "momey-bims",
+    storageBucket: "momey-bims.firebasestorage.app",
+    messagingSenderId: "21496105095",
+    appId: "1:21496105095:web:cbd7b39dada8f0b671d022",
+    measurementId: "G-ECE8ZBS23B"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.Telegram?.WebApp?.ready?.();
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const userKey = tgUser ? String(tgUser.id) : "UNKNOWN_USER";
+
+  const BOT_USERNAME = "moneybums_bot";
+  const referLink = `https://t.me/${BOT_USERNAME}?start=${userKey}`;
+
+  const byId = (id) => document.getElementById(id);
+
+  async function loadReferData() {
+    try {
+      const userRef = ref(db, 'users/' + userKey);
+      const snap = await get(userRef);
+      
+      let data = {};
+      if (snap.exists()) {
+        data = snap.val() || {};
+      } else {
+        data = { 
+          bums: 10, 
+          ton: 0.00, 
+          referEarn: 0,
+          totalEarn: 0,
+          adsWatch: 0,
+          taskDone: 0,
+          DailyStreak: 0
+        };
+        await set(userRef, data);
+      }
+
+      // Get referral list
+      const referralRef = ref(db, `users/${userKey}/referral`);
+      const referralSnap = await get(referralRef);
+      
+      let referralList = [];
+      if (referralSnap.exists()) {
+        const referralData = referralSnap.val() || {};
+        referralList = Object.keys(referralData).filter(key => referralData[key] === true);
+      }
+
+      const totalRefers = referralList.length;
+      const referEarn = data.referEarn || 0;
+
+      byId('total-refers').textContent = String(totalRefers);
+      byId('refer-earn').textContent = String(referEarn);
+      byId('claim-amount').textContent = `${referEarn} BUMS`;
+      byId('list-count').textContent = String(totalRefers);
+
+      const claimBtn = byId('claim-btn');
+      if (referEarn <= 0) {
+        claimBtn.disabled = true;
+        claimBtn.textContent = '❌ NO EARNINGS TO CLAIM';
+      } else {
+        claimBtn.disabled = false;
+        claimBtn.textContent = '💰 CLAIM EARNINGS';
+      }
+
+      byId('refer-link').value = referLink;
+
+      // Display referral list
+      displayReferralList(referralList);
+    } catch (err) {
+      console.error('loadReferData error:', err);
+      showSnackbar('Failed to load refer data', true);
+    }
+  }
+
+  function displayReferralList(referralList) {
+    const listContainer = byId('referral-list');
+    if (!listContainer) return;
+
+    if (referralList.length === 0) {
+      listContainer.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <div class="empty-text">No referrals yet. Start sharing your link!</div>
+        </div>
+      `;
+      return;
+    }
+
+    listContainer.innerHTML = '';
+    referralList.forEach((userId, index) => {
+      const item = document.createElement('div');
+      item.className = 'referral-item';
+      
+      const initial = userId.charAt(0).toUpperCase();
+      
+      item.innerHTML = `
+        <div class="referral-avatar">${initial}</div>
+        <div class="referral-info">
+          <div class="referral-id">User ID: ${userId}</div>
+          <div class="referral-badge">✅ Active Referral</div>
+        </div>
+      `;
+      
+      listContainer.appendChild(item);
+    });
+  }
+
+  window.claimEarnings = async function() {
+    const claimBtn = byId('claim-btn');
+    if (!claimBtn || claimBtn.disabled) return;
+
+    claimBtn.disabled = true;
+    claimBtn.textContent = 'CLAIMING...';
+
+    try {
+      const userRef = ref(db, 'users/' + userKey);
+      const snap = await get(userRef);
+      
+      if (!snap.exists()) {
+        showSnackbar('User data not found', true);
+        return;
+      }
+
+      const userData = snap.val() || {};
+      const referEarn = Number(userData.referEarn || 0);
+
+      if (referEarn <= 0) {
+        showSnackbar('No earnings to claim', true);
+        return;
+      }
+
+      const currentBums = Number(userData.bums || 0);
+      const newBums = currentBums + referEarn;
+      const totalEarn = Number(userData.totalEarn || 0) + referEarn;
+
+      await update(userRef, {
+        bums: newBums,
+        referEarn: 0,
+        totalEarn: totalEarn
+      });
+
+      // Update totalEarnBy
+      const byCurrRef = ref(db, `users/${userKey}/totalEarnBy/BUMS`);
+      await runTransaction(byCurrRef, (cur) => (cur ?? 0) + referEarn);
+
+      byId('refer-earn').textContent = '0';
+      byId('claim-amount').textContent = '0 BUMS';
+      claimBtn.textContent = '❌ NO EARNINGS TO CLAIM';
+
+      showSnackbar(`🎉 Successfully claimed ${referEarn} BUMS!`);
+    } catch (err) {
+      console.error('claimEarnings error:', err);
+      showSnackbar('Failed to claim earnings', true);
+      claimBtn.disabled = false;
+      claimBtn.textContent = '💰 CLAIM EARNINGS';
+    }
+  };
+
+  window.copyReferLink = function() {
+    const linkInput = byId('refer-link');
+    if (!linkInput) return;
+
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999);
+
+    try {
+      navigator.clipboard.writeText(referLink).then(() => {
+        showSnackbar('✅ Link copied to clipboard!');
+      }).catch(() => {
+        document.execCommand('copy');
+        showSnackbar('✅ Link copied to clipboard!');
+      });
+    } catch (err) {
+      document.execCommand('copy');
+      showSnackbar('✅ Link copied to clipboard!');
+    }
+  };
+
+  window.shareReferLink = function() {
+    const shareText = `🎮 Join PANDA COMBAT and earn rewards!\n\n💰 Use my referral link:\n${referLink}`;
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referLink)}&text=${encodeURIComponent(shareText)}`;
+    
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.openTelegramLink(shareUrl);
+    } else {
+      window.open(shareUrl, '_blank');
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadReferData);
+  } else {
+    loadReferData();
+  }
+</script>
+</head>
+</html>
